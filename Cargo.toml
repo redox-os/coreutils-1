@@ -96,6 +96,7 @@ redox = [
   "base64",
   "basename",
   "cksum",
+  "chmod",
   "comm",
   "cp",
   "cut",
@@ -111,7 +112,10 @@ redox = [
   "fmt",
   "fold",
   "head",
+  "install",
   "link",
+  "ls",
+  "mktemp",
   "mv",
   "od",
   "paste",
@@ -256,3 +260,9 @@ path = "src/uutils/uutils.rs"
 
 [[test]]
 name = "tests"
+
+[replace]
+"atty:0.2.2" = { git = "https://github.com/ids1024/atty", branch = "redox2" }
+"cmake:0.1.24" = { git = "https://github.com/alexcrichton/cmake-rs" }
+"termsize:0.1.4" = { git = "https://github.com/softprops/termsize" }
+"tempfile:2.1.6" = { git = "https://github.com/ids1024/tempfile", branch = "redox" }

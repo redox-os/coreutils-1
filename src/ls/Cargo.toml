@@ -9,7 +9,7 @@ path = "ls.rs"
 
 [dependencies]
 getopts = "0.2.14"
-pretty-bytes = "0.2.1"
+pretty-bytes = { git = "https://github.com/ids1024/rust-pretty-bytes", branch = "atty" }
 term_grid = "0.1.5"
 termsize = "0.1.4"
 time = "0.1.38"
