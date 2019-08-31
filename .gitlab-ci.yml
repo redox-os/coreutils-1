@@ -1,0 +1,121 @@
+image: "rust:latest"
+
+stages:
+    - build
+    - test
+
+before_script:
+    - apt-get update
+    - apt-get install cmake --yes
+    - rustup toolchain add $toolchain
+    - if [ $redox ]; then rustup target add x86_64-unknown-redox --toolchain $toolchain; fi
+    - rustup show
+
+cache:
+    paths:
+        - target/
+
+.build:linux:stable:
+    stage: build
+    variables:
+        toolchain: stable
+    artifacts:
+        paths:
+            - target/debug/uutils
+            - target/release/uutils
+    script:
+        - cargo +stable build --verbose
+        - cargo +stable build --release --verbose
+
+.build:redox:stable:
+    stage: build
+    variables:
+        toolchain: stable
+        redox: 1
+    artifacts:
+        paths:
+            - target/x86_64-unknown-redox/debug/uutils
+            - target/x86_64-unknown-redox/release/uutils
+    script:
+        - cargo +stable build --verbose --target x86_64-unknown-redox
+        - cargo +stable build --release --verbose --target x86_64-unknown-redox
+
+.test:linux:stable:
+    stage: test
+    variables:
+        toolchain: stable
+    dependencies:
+        - build:linux:stable
+    script:
+        - cargo +stable test --verbose
+        - cargo +stable test --release --verbose
+
+.build:linux:beta:
+    stage: build
+    variables:
+        toolchain: beta
+    artifacts:
+        paths:
+            - target/debug/uutils
+            - target/release/uutils
+    script:
+        - cargo +beta build --verbose
+        - cargo +beta build --release --verbose
+
+.build:redox:beta:
+    stage: build
+    variables:
+        toolchain: beta
+        redox: 1
+    artifacts:
+        paths:
+            - target/x86_64-unknown-redox/debug/uutils
+            - target/x86_64-unknown-redox/release/uutils
+    script:
+        - cargo +beta build --verbose --target x86_64-unknown-redox
+        - cargo +beta build --release --verbose --target x86_64-unknown-redox
+
+.test:linux:beta:
+    stage: test
+    variables:
+        toolchain: beta
+    dependencies:
+        - build:linux:beta
+    script:
+        - cargo +beta test --verbose
+        - cargo +beta test --release --verbose
+
+build:linux:nightly:
+    stage: build
+    variables:
+        toolchain: nightly
+    artifacts:
+        paths:
+            - target/debug/uutils
+            - target/release/uutils
+    script:
+        - cargo +nightly build --verbose
+        - cargo +nightly build --release --verbose
+
+build:redox:nightly:
+    stage: build
+    variables:
+        toolchain: nightly
+        redox: 1
+    artifacts:
+        paths:
+            - target/x86_64-unknown-redox/debug/uutils
+            - target/x86_64-unknown-redox/release/uutils
+    script:
+        - cargo +nightly build --verbose --target x86_64-unknown-redox
+        - cargo +nightly build --release --verbose --target x86_64-unknown-redox
+
+test:linux:nightly:
+    stage: test
+    variables:
+        toolchain: nightly
+    dependencies:
+        - build:linux:nightly
+    script:
+        - cargo +nightly test --verbose
+        - cargo +nightly test --release --verbose
